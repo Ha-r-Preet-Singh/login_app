@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_sig_up_with_firebase/screens/home_screen.dart';
 import 'package:login_sig_up_with_firebase/screens/on%20boading/sign_up.dart';
-
+import 'package:login_sig_up_with_firebase/screens/splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,10 +18,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController _loginEmailController = TextEditingController();
   final TextEditingController _loginPasswordController =
-  TextEditingController();
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    var formKey = GlobalKey<FormState>();
     return Scaffold(
       // appBar: AppBar(
       //   backgroundColor: Colors.red,
@@ -36,7 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Container(
             child: Column(
               children: [
-                Text("Log in Screen",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+                Text(
+                  "Log in Screen",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
                 SizedBox(
                   height: 10,
                 ),
@@ -68,25 +73,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 ElevatedButton(
                     style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     onPressed: () async {
                       var mLoginEmail = _loginEmailController.text.toString();
                       var mLoginPass = _loginPasswordController.text.toString();
 
                       try {
-                    final credentials =   await FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: mLoginEmail,
-                            password: mLoginPass,
+                        final credentials = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                          email: mLoginEmail,
+                          password: mLoginPass,
                         );
-    if (credentials != null) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(),
-            ));
-      } else {
-        print("Check Email & Password");
-      }
+                        var prefs = await SharedPreferences.getInstance();
+                        prefs.setBool(LOGIN_KEY, true);
+
+
+                        if (credentials != null) {
+
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ));
+                        } else {
+                          print("Check Email & Password");
+                        }
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           print('No user found for that email.');
@@ -129,9 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 10,
                 ),
                 InkWell(
-                    onTap: () {
-
-                    },
+                    onTap: () {},
                     child: Text(
                       "Forget Password??",
                       style: TextStyle(fontWeight: FontWeight.bold),

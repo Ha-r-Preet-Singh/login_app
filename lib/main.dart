@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login_sig_up_with_firebase/firebase_options.dart';
 import 'package:login_sig_up_with_firebase/screens/on%20boading/sign_up.dart';
+import 'package:login_sig_up_with_firebase/screens/splash_screen.dart';
 
 
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SignUpScreen(),
+      home: SplashScreen(),
     );
   }
 }
